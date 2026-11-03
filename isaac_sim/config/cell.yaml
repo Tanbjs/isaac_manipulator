@@ -1,0 +1,52 @@
+# Conveyor sorting cell: Franka on a pedestal next to a conveyor belt, an overhead RGB-D camera upstream of the
+# robot, one bin per object class. World frame: z up, robot base at the origin (on the pedestal), belt along +y.
+# All lengths in m, angles in deg, speeds in m/s.
+
+robot:
+  usd: /Isaac/Robots/FrankaRobotics/FrankaPanda/franka.usd
+  base_height: 0.75          # pedestal top = panda_link0 origin
+  pedestal_size: [0.3, 0.3]
+  # Ready pose: hand above the belt, fingers open (panda_joint1..7, panda_finger_joint1..2)
+  ready_pose: [0.0, -0.3, 0.0, -2.2, 0.0, 1.9, 0.785, 0.04, 0.04]
+
+conveyor:
+  center_x: 0.55             # belt center line, in front of the robot
+  start_y: -1.3              # objects enter here
+  end_y: 1.0                 # objects past this are recycled
+  width: 0.30
+  thickness: 0.05
+  top: 0.75                  # belt surface height (= robot base height)
+  rail_height: 0.04          # side rails above the belt surface
+  speed: 0.08                # initial speed (+y), change at runtime on /control/conveyor_speed
+
+camera:
+  # Looks straight down at the belt, image +x (right) = flow direction (+y world), image +y (down) = +x world
+  position: [0.55, -0.6, 1.40]
+  resolution: [480, 640]     # (height, width)
+  focal_length: 18.0         # mm, horizontal aperture 20.955 mm -> ~60 deg HFOV, ~0.75 m of belt in view
+  clipping_range: [0.05, 5.0]
+  rate_hz: 15
+
+spawner:
+  interval: [2.5, 4.0]       # s between spawns, uniform
+  lateral_jitter: 0.07       # +-x offset from the belt center line
+  copies_per_class: 4        # object pool size per class
+  bin_dwell: 3.0             # s an object rests in a bin before it is counted and recycled
+
+# Object classes (YOLO labels). `usd` is under /Isaac/Props/YCB/Axis_Aligned/, `rest_rpy` turns the asset into its
+# resting pose on the belt; every class fits the Panda gripper (max opening 0.08 m) from the top.
+objects:
+  tomato_soup_can:   {usd: 005_tomato_soup_can.usd, rest_rpy: [90, 0, 0], mass: 0.35, bin: red}
+  gelatin_box:       {usd: 009_gelatin_box.usd,     rest_rpy: [0, 0, 0],  mass: 0.10, bin: blue}
+  foam_brick:        {usd: 061_foam_brick.usd,      rest_rpy: [0, 0, 0],  mass: 0.03, bin: green}
+  potted_meat_can:   {usd: 010_potted_meat_can.usd, rest_rpy: [0, 90, 0], mass: 0.37, bin: yellow}
+
+# Open bins on stands, within reach of the robot and clear of the belt (center x, y)
+bins:
+  size: [0.26, 0.26]
+  wall_height: 0.12
+  stand_height: 0.55
+  red:    {position: [0.05, 0.50],  color: [0.8, 0.15, 0.15]}
+  blue:   {position: [0.05, -0.50], color: [0.15, 0.3, 0.8]}
+  green:  {position: [-0.42, 0.30], color: [0.15, 0.65, 0.2]}
+  yellow: {position: [-0.42, -0.30], color: [0.9, 0.75, 0.1]}
