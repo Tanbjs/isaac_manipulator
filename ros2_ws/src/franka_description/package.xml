@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>franka_description</name>
+  <version>0.7.1</version>
+  <description>
+    URDF and meshes of the Franka Panda with hand (franka_ros franka_description 0.7.1, as bundled with Isaac Sim's
+    URDF importer), and a robot_state_publisher launch for the conveyor cell sim.
+  </description>
+  <maintainer email="benjaset.m@gmail.com">tanbjs</maintainer>
+  <license>Apache-2.0</license>
+  <author>Franka Emika GmbH</author>
+  <url type="repository">https://github.com/frankaemika/franka_ros</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
